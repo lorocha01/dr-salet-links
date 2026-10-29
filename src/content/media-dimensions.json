@@ -1,0 +1,30 @@
+{
+  "face/hero-retrato": {
+    "width": 855,
+    "height": 1280
+  },
+  "face/deep-neck-perfil": {
+    "width": 1280,
+    "height": 855
+  },
+  "face/masculino": {
+    "width": 1280,
+    "height": 855
+  },
+  "face/medico": {
+    "width": 1280,
+    "height": 925
+  },
+  "corporal/hero-jaleco": {
+    "width": 928,
+    "height": 1280
+  },
+  "corporal/medico": {
+    "width": 855,
+    "height": 1280
+  },
+  "corporal/videochamada": {
+    "width": 1280,
+    "height": 855
+  }
+}

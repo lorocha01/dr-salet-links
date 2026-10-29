@@ -1,0 +1,1 @@
+{"root":["./src/components/consentbanner.tsx","./src/components/primitives.tsx","./src/config/site.ts","./src/content/types.ts","./src/entries/main.tsx","./src/lib/tracking.ts","./src/lib/whatsapp.ts","./src/pages/linkspage.tsx"],"version":"5.6.3"}
