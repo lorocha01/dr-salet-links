@@ -21,6 +21,7 @@ npm run build      # gera dist/ (estático)
 | Endereço do site principal, WhatsApp, GA4, Meta Pixel | variáveis de ambiente (ver `.env.example`) |
 | Título, descrição e imagem de compartilhamento | `index.html` |
 | Cores, tipografia, layout | `src/styles/index.css` |
+| Logotipo oficial (arte branca, fundo transparente) e símbolo recortado | `public/brand/` (favicons gerados a partir do símbolo) |
 
 ## Rastreamento
 
@@ -29,7 +30,6 @@ Cada clique dispara o evento neutro `link_click` com `link_destination` (`agenda
 ## Pendências
 
 - [ ] **WhatsApp da recepção** (`VITE_WHATSAPP_NUMBER`): hoje "Agendar uma consulta" liga para (51) 3024-7494. Preenchido, o botão abre o WhatsApp com mensagem pronta.
-- [ ] **Logotipo oficial** para substituir o monograma aproximado.
 - [ ] **Aprovação do Dr. Salet** do texto de apresentação.
 - [ ] **"Conheça o Dr. Salet"** abre `/face#medico`: o site principal precisa da correção de âncora (branch `feat/pagina-links`, `src/components/Chrome.tsx`) para rolar até a seção.
 - [ ] Quando `drsalet.com.br` apontar para o site principal: atualizar `VITE_MAIN_SITE_URL` e, se a página de links ganhar domínio próprio, `index.html` (canonical/og).

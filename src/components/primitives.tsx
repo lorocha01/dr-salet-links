@@ -42,17 +42,6 @@ export function Picture({
   );
 }
 
-export function Monogram({ size = 44, title }: { size?: number; title?: string }) {
-  return (
-    <svg className="monogram" width={size} height={size} viewBox="0 0 48 48" role={title ? 'img' : undefined} aria-hidden={title ? undefined : true}>
-      {title && <title>{title}</title>}
-      <rect x="4.5" y="4.5" width="39" height="39" fill="none" stroke="currentColor" strokeWidth="0.9" />
-      <rect x="7.5" y="7.5" width="33" height="33" fill="none" stroke="currentColor" strokeWidth="0.4" opacity="0.55" />
-      <text x="24" y="34" textAnchor="middle" className="monogram__s">S</text>
-    </svg>
-  );
-}
-
 export function ArrowIcon({ dir = 'right' }: { dir?: 'right' | 'down' | 'up-right' }) {
   const rot = dir === 'down' ? 90 : dir === 'up-right' ? -45 : 0;
   return (

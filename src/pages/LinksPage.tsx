@@ -1,7 +1,7 @@
 import { useEffect, type CSSProperties, type ReactNode } from 'react';
 import { clinic, doctor, mainSiteUrl } from '../config/site';
 import type { Media } from '../content/types';
-import { ArrowIcon, Monogram, Picture, Rich, WhatsIcon } from '../components/primitives';
+import { ArrowIcon, Picture, Rich, WhatsIcon } from '../components/primitives';
 import { ConsentBanner } from '../components/ConsentBanner';
 import { initTracking, trackLinkClick } from '../lib/tracking';
 import { whatsappUrl } from '../lib/whatsapp';
@@ -13,11 +13,16 @@ import { whatsappUrl } from '../lib/whatsapp';
 type Dest = { id: string; href: string; external?: boolean };
 type PhotoCard = Dest & { kicker: string; title: string; text: string; media: Media };
 
-const booking: Dest & { channel: string } = (() => {
+const booking: Dest & { channel: ReactNode } = (() => {
   const wa = whatsappUrl('Olá! Gostaria de agendar uma consulta com o Dr. Salet. Conheci o consultório pela página de links do Instagram.');
   return wa
     ? { id: 'agendar_whatsapp', href: wa, external: true, channel: 'Conversar com a recepção pelo WhatsApp' }
-    : { id: 'agendar_telefone', href: clinic.phoneHref, channel: `Ligar para a recepção · ${clinic.phoneDisplay}` };
+    : {
+        id: 'agendar_telefone',
+        href: clinic.phoneHref,
+        // O número nunca quebra no hífen
+        channel: <>Ligar para a recepção · <span className="nowrap">{clinic.phoneDisplay}</span></>,
+      };
 })();
 
 const cards: PhotoCard[] = [
@@ -72,7 +77,7 @@ export function LinksPage() {
             />
           </div>
           <div className="lk-hero__top">
-            <Monogram size={40} title={doctor.name} />
+            <img className="lk-hero__symbol" src="/brand/simbolo-dr-salet.png" width={238} height={238} alt={doctor.name} />
             <span className="label">Porto Alegre · {clinic.address.state}</span>
           </div>
           <div className="lk-hero__body">
@@ -139,6 +144,7 @@ export function LinksPage() {
         </section>
 
         <footer className="lk-foot">
+          <img className="lk-foot__logo" src="/brand/logo-dr-salet.png" width={800} height={238} alt="Dr. Salet, Cirurgia Plástica" loading="lazy" decoding="async" />
           <p>
             Conteúdo informativo, não substitui a consulta médica. Responsável técnico: {doctor.name} — {doctor.crm} · {doctor.rqe}.
           </p>

@@ -125,9 +125,9 @@ section { position: relative; padding-block: var(--section); }
 .btn[disabled] { opacity: 0.75; cursor: progress; }
 .link-btn { background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 4px; font-size: 0.9rem; color: var(--muted); }
 
-/* ---------- Monograma ---------- */
-.monogram { color: currentColor; flex: none; }
-.monogram__s { font-family: var(--serif); font-size: 27px; fill: currentColor; }
+/* ---------- Logotipo oficial (arte branca, fundo transparente) ---------- */
+.lk-hero__symbol { width: 50px; height: 50px; flex: none; filter: drop-shadow(0 1px 6px rgba(18, 20, 24, 0.45)); }
+.lk-foot__logo { width: 210px; height: auto; margin: 0 auto 26px; opacity: 0.94; }
 
 /* ---------- Imagens ---------- */
 .pic { display: block; overflow: hidden; height: 100%; }
@@ -190,6 +190,7 @@ section { position: relative; padding-block: var(--section); }
 .lk-cta__title { font-family: var(--serif); font-size: 1.5rem; line-height: 1.05; }
 .lk-cta__title em { color: var(--brass-deep); }
 .lk-cta__text { font-size: 0.8rem; color: #4e4a43; line-height: 1.4; }
+.nowrap { white-space: nowrap; }
 
 /* Cartões editoriais com foto, alternando o lado */
 .lk-card {
