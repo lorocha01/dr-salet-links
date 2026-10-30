@@ -134,7 +134,7 @@ export function LinksPage() {
               href={clinic.address.mapsUrl}
               external
               icon={<PinIcon />}
-              title={`${clinic.address.street} — ${clinic.address.district}`}
+              title={`${clinic.address.street} · ${clinic.address.district}`}
               text={`${clinic.address.city}/${clinic.address.state} · Ver no mapa`}
             />
             {booking.external && (
@@ -146,7 +146,7 @@ export function LinksPage() {
         <footer className="lk-foot">
           <img className="lk-foot__logo" src="/brand/logo-dr-salet.png" width={800} height={238} alt="Dr. Salet, Cirurgia Plástica" loading="lazy" decoding="async" />
           <p>
-            Conteúdo informativo, não substitui a consulta médica. Responsável técnico: {doctor.name} — {doctor.crm} · {doctor.rqe}.
+            Conteúdo informativo, não substitui a consulta médica. Responsável técnico: {doctor.name}, {doctor.crm} · {doctor.rqe}.
           </p>
           <p className="lk-foot__links">
             <a href={`${mainSiteUrl}/privacidade`}>Privacidade</a>
