@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+Disallow: /privacidade
+Sitemap: https://drsalet.com.br/sitemap.xml
