@@ -4,13 +4,13 @@ import { clinic, doctor, type PageKey } from '../config/site';
 import type { Common } from '../content/types';
 import { initParallax, initReveal } from '../lib/motion';
 import { initTracking, readConsent, saveConsent, trackConversion } from '../lib/tracking';
-import { defaultMessage, hasWhatsapp, whatsappUrl } from '../lib/whatsapp';
+import { defaultMessage, hasWhatsapp, whatsappDisplay, whatsappUrl } from '../lib/whatsapp';
 import { Header } from './Header';
 import { LeadForm } from './LeadForm';
 import { ArrowIcon, Kicker, Lines, Logo, WhatsIcon } from './primitives';
 
 /** Link de WhatsApp com rastreamento; sem número configurado, cai para o telefone. */
-export function WhatsLink({ page, className = '', children }: { page: PageKey; className?: string; children?: ReactNode }) {
+export function WhatsLink({ page, className = '', icon = true, children }: { page: PageKey; className?: string; icon?: boolean; children?: ReactNode }) {
   const url = whatsappUrl(defaultMessage(page));
   if (!url) {
     return <a className={className} href={clinic.phoneHref}>{children ?? `Ligar ${clinic.phoneDisplay}`}</a>;
@@ -23,7 +23,7 @@ export function WhatsLink({ page, className = '', children }: { page: PageKey; c
       rel="noopener noreferrer"
       onClick={() => trackConversion(page === 'face' ? 'CONV-WHATSAPP-FACE' : 'CONV-WHATSAPP-CORPORAL', page)}
     >
-      <WhatsIcon /> {children ?? 'Conversar pelo WhatsApp'}
+      {icon && <><WhatsIcon />{' '}</>}{children ?? 'Conversar pelo WhatsApp'}
     </a>
   );
 }
@@ -39,7 +39,7 @@ export function Booking({ page, content, index, tone }: { page: PageKey; content
           <div className="booking__direct" data-reveal>
             <p className="label">Contato direto</p>
             <WhatsLink page={page} className="booking__link" />
-            {hasWhatsapp() && <a className="booking__link" href={clinic.phoneHref}>{clinic.phoneDisplay}</a>}
+            {hasWhatsapp() && <WhatsLink page={page} className="booking__link" icon={false}>{whatsappDisplay()}</WhatsLink>}
             <address className="booking__addr">
               {clinic.address.street}, {clinic.address.district}<br />
               {clinic.address.city}/{clinic.address.state}
