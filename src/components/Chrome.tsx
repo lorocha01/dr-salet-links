@@ -203,7 +203,7 @@ export function PageShell({ content, theme, children, ctaLabel }: { content: Com
 
   return (
     <div className={`page page--${theme}`}>
-      <Header nav={content.nav} crossLink={content.crossLink} cta={ctaLabel} />
+      <Header page={content.page} nav={content.nav} crossLink={content.crossLink} cta={ctaLabel} />
       <main id="conteudo-principal">{children}</main>
       <Footer crossLink={content.crossLink} />
       <MobileCta page={content.page} />

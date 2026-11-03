@@ -1,6 +1,7 @@
 import { doctor } from '../config/site';
 import type { HeroVariant, Media, Video } from '../content/types';
-import { ArrowIcon, Lines, Picture } from './primitives';
+import { WhatsLink } from './Chrome';
+import { Lines, Picture } from './primitives';
 
 type Props = {
   variant: HeroVariant;
@@ -42,10 +43,7 @@ export function Hero({ variant, variantKey, media, video, layout, tags }: Props)
         <Lines lines={variant.title} as="h1" className="hero__title" id="hero-title" />
         <p className="hero__subtitle">{variant.subtitle}</p>
         <div className="hero__actions">
-          <a className="btn btn--solid" href="#agendar">
-            {variant.cta}
-            <ArrowIcon />
-          </a>
+          <WhatsLink page={layout} className="btn btn--solid">{variant.cta}</WhatsLink>
           <a className="hero__secondary" href="#medico">Conheça o médico</a>
         </div>
 
