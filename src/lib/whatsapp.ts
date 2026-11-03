@@ -29,6 +29,11 @@ export function whatsappUrl(message?: string) {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
+/** Número do WhatsApp para exibição, sem o DDI: (51) 9365-8237. */
+export function whatsappDisplay() {
+  return clinic.whatsapp ? maskPhone(clinic.whatsapp.replace(/^55/, '')) : null;
+}
+
 export function defaultMessage(page: PageKey) {
   const topic = page === 'face' ? 'cirurgia facial' : 'cirurgia de contorno corporal';
   return `Olá! Gostaria de informações sobre uma avaliação de ${topic} com o Dr. Salet. Conheci o consultório pela página ${page}.`;
