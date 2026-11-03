@@ -1,4 +1,4 @@
-// Elementos de moldura da página: agendamento, rodapé, CTA fixo no celular, consentimento e o shell.
+// Elementos de moldura da página: agendamento, rodapé, botão fixo de WhatsApp, consentimento e o shell.
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { clinic, doctor, type PageKey } from '../config/site';
 import type { Common } from '../content/types';
@@ -107,41 +107,13 @@ export function Footer({ crossLink }: { crossLink: Common['crossLink'] }) {
   );
 }
 
-/**
- * Botão fixo no celular. Some no topo, no agendamento e no rodapé para não cobrir controles.
- * O botão flutuante de WhatsApp fica sempre visível no desktop; no celular aparece só no topo,
- * antes de a barra fixa entrar.
- */
+/** Botão flutuante de WhatsApp, fixo em todas as telas (no celular, só o ícone). */
 export function MobileCta({ page }: { page: PageKey }) {
-  const [visible, setVisible] = useState(false);
-  const [atTop, setAtTop] = useState(true);
-  useEffect(() => {
-    const hero = document.getElementById('topo');
-    const booking = document.getElementById('agendar');
-    const footer = document.querySelector('.footer');
-    const seen = new Map<Element, boolean>();
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => seen.set(e.target, e.isIntersecting));
-      setVisible(![hero, booking, footer].some((el) => el && seen.get(el)));
-      setAtTop(Boolean(hero && seen.get(hero)));
-    });
-    [hero, booking, footer].forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
-  }, []);
+  if (!hasWhatsapp()) return null;
   return (
-    <>
-      <div className={`mobile-cta ${visible ? 'is-visible' : ''}`} aria-hidden={!visible}>
-        <a className="mobile-cta__main" href="#agendar" tabIndex={visible ? 0 : -1}>Agendar avaliação</a>
-        <WhatsLink page={page} className="mobile-cta__wa">
-          <span className="sr-only">{hasWhatsapp() ? 'WhatsApp' : 'Ligar'}</span>
-        </WhatsLink>
-      </div>
-      {hasWhatsapp() && (
-        <WhatsLink page={page} className={`wa-float ${atTop ? 'is-top' : ''}`}>
-          <span className="wa-float__label">Fale no WhatsApp</span>
-        </WhatsLink>
-      )}
-    </>
+    <WhatsLink page={page} className="wa-float">
+      <span className="wa-float__label">Fale no WhatsApp</span>
+    </WhatsLink>
   );
 }
 
