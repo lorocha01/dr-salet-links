@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { doctor } from '../config/site';
+import { doctor, type PageKey } from '../config/site';
+import { WhatsLink } from './Chrome';
 import { ArrowIcon, Logo } from './primitives';
 
 type Props = {
+  page: PageKey;
   nav: { id: string; label: string }[];
   crossLink: { href: string; label: string };
   cta: string;
 };
 
-export function Header({ nav, crossLink, cta }: Props) {
+export function Header({ page, nav, crossLink, cta }: Props) {
   const [state, setState] = useState<'top' | 'solid' | 'hidden'>('top');
   const [open, setOpen] = useState(false);
   const menuBtn = useRef<HTMLButtonElement>(null);
@@ -63,7 +65,7 @@ export function Header({ nav, crossLink, cta }: Props) {
         <div className="header__actions">
           <a className="header__home" href="/"><ArrowIcon dir="left" />Início</a>
           <a className="header__cross" href={crossLink.href}>{crossLink.label}<ArrowIcon dir="up-right" /></a>
-          <a className="btn btn--line btn--sm header__cta" href="#agendar">{cta}</a>
+          <WhatsLink page={page} className="btn btn--line btn--sm header__cta">{cta}</WhatsLink>
           <button
             ref={menuBtn}
             type="button"
@@ -94,7 +96,7 @@ export function Header({ nav, crossLink, cta }: Props) {
             ))}
           </ol>
           <div className="menu__foot">
-            <a className="btn btn--solid" href="#agendar" onClick={() => setOpen(false)}>{cta}</a>
+            <WhatsLink page={page} className="btn btn--solid">{cta}</WhatsLink>
             <a className="menu__cross" href={crossLink.href}>{crossLink.label} <ArrowIcon dir="up-right" /></a>
             <a className="menu__cross" href="/"><ArrowIcon dir="left" /> Voltar ao início</a>
           </div>
