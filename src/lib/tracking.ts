@@ -1,9 +1,15 @@
-// Rastreamento com consentimento (LGPD), igual ao do site principal.
+// Rastreamento com consentimento (LGPD).
 // - Nenhum script de terceiros carrega antes do aceite.
-// - Nenhum dado pessoal é enviado às plataformas.
-import { tracking } from '../config/site';
+// - Nenhum dado pessoal (nome, telefone, cidade, procedimento) é enviado às plataformas.
+// - Cada conversão recebe um event_id único e é disparada uma única vez.
+import { tracking, type PageKey } from '../config/site';
 
 export type ConsentState = { analytics: boolean; marketing: boolean; decidedAt: string };
+export type ConversionKey =
+  | 'CONV-WHATSAPP-FACE'
+  | 'CONV-FORM-FACE'
+  | 'CONV-WHATSAPP-CORPORAL'
+  | 'CONV-FORM-CORPORAL';
 
 const CONSENT_KEY = 'salet.consent.v1';
 const ATTR_KEY = 'salet.attribution.v1';
@@ -42,11 +48,12 @@ export function saveConsent(analytics: boolean, marketing: boolean) {
   window.dispatchEvent(new CustomEvent('salet:consent', { detail: state }));
 }
 
-const loaded = { google: false, meta: false };
+let loaded = { google: false, meta: false };
 
 export function applyConsent(state: ConsentState | null) {
   if (!state) return;
-  if (state.analytics && tracking.ga4Id && !loaded.google) loadGoogle(state);
+  const needsGoogle = (state.analytics && tracking.ga4Id) || (state.marketing && tracking.googleAdsId);
+  if (needsGoogle && !loaded.google) loadGoogle(state);
   if (state.marketing && tracking.metaPixelId && !loaded.meta) loadMeta();
 }
 
@@ -59,6 +66,7 @@ function loadScript(src: string) {
 
 function loadGoogle(state: ConsentState) {
   loaded.google = true;
+  const firstId = tracking.ga4Id ?? tracking.googleAdsId!;
   window.dataLayer = window.dataLayer || [];
   window.gtag = function gtag() { window.dataLayer!.push(arguments); };
   window.gtag('consent', 'default', {
@@ -68,8 +76,9 @@ function loadGoogle(state: ConsentState) {
     ad_personalization: 'denied',
   });
   window.gtag('js', new Date());
-  window.gtag('config', tracking.ga4Id, { anonymize_ip: true });
-  loadScript(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(tracking.ga4Id!)}`);
+  if (tracking.ga4Id && state.analytics) window.gtag('config', tracking.ga4Id, { anonymize_ip: true });
+  if (tracking.googleAdsId && state.marketing) window.gtag('config', tracking.googleAdsId);
+  loadScript(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(firstId)}`);
 }
 
 function loadMeta() {
@@ -114,11 +123,58 @@ export function readAttribution(): Attribution | null {
   try { return JSON.parse(raw) as Attribution; } catch { return null; }
 }
 
-/* ---------- Cliques ---------- */
+/* ---------- Conversões ---------- */
+
+const fired = new Set<string>();
+
+function newEventId() {
+  return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
 
 /**
- * Clique em um destino da página de links. Evento neutro, não é conversão:
- * as conversões de WhatsApp/formulário são disparadas apenas nas landing pages do site principal.
+ * Registra uma conversão uma única vez por `actionId`.
+ * Use um actionId por interação (ex.: o id de envio do formulário) para evitar contagens duplicadas
+ * em cliques repetidos ou re-renderizações.
+ */
+export function trackConversion(key: ConversionKey, page: PageKey, actionId: string = newEventId()) {
+  if (fired.has(actionId)) return;
+  fired.add(actionId);
+
+  const attr = readAttribution() ?? {};
+  // Somente dados não pessoais.
+  const params = {
+    page,
+    event_id: actionId,
+    utm_source: attr.utm_source,
+    utm_medium: attr.utm_medium,
+    utm_campaign: attr.utm_campaign,
+  };
+
+  // dataLayer para GTM, caso seja adotado futuramente (não carrega nada por si só).
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: key, ...params });
+
+  const consent = readConsent();
+  const gaEvent = key.toLowerCase().replace(/-/g, '_'); // GA4 não aceita hífen em nomes de evento
+
+  if (window.gtag) {
+    if (consent?.analytics && tracking.ga4Id) window.gtag('event', gaEvent, params);
+    const label = tracking.googleAdsLabels[key];
+    if (consent?.marketing && tracking.googleAdsId && label) {
+      window.gtag('event', 'conversion', { send_to: `${tracking.googleAdsId}/${label}`, transaction_id: actionId });
+    }
+  }
+  if (consent?.marketing && window.fbq) {
+    // eventID permite deduplicação com a API de Conversões quando ela existir no servidor.
+    window.fbq('trackCustom', gaEvent, { page }, { eventID: actionId });
+    window.fbq('track', 'Contact', {}, { eventID: `${actionId}-c` });
+  }
+  if (import.meta.env.DEV) console.info('[tracking]', key, params);
+}
+
+/**
+ * Clique em um destino da página de links (/links). Evento neutro, não é conversão:
+ * as conversões de WhatsApp/formulário continuam sendo disparadas apenas nas landing pages.
  */
 export function trackLinkClick(destination: string) {
   const attr = readAttribution() ?? {};

@@ -1,14 +1,13 @@
 import { useEffect, type CSSProperties, type ReactNode } from 'react';
-import { clinic, doctor, mainSiteUrl } from '../config/site';
+import { clinic, doctor } from '../config/site';
 import type { Media } from '../content/types';
 import { ArrowIcon, Picture, Rich, WhatsIcon } from '../components/primitives';
-import { ConsentBanner } from '../components/ConsentBanner';
+import { ConsentBanner } from '../components/Chrome';
 import { initTracking, trackLinkClick } from '../lib/tracking';
 import { whatsappUrl } from '../lib/whatsapp';
 
-// Página de links para a bio do Instagram (projeto separado do site principal).
-// Somente destinos confirmados: landing pages do site principal (mainSiteUrl), Instagram, telefone e endereço de src/config/site.ts.
-// PENDENTE: WhatsApp da recepção (VITE_WHATSAPP_NUMBER). Enquanto não houver, "Agendar" liga para o telefone fixo.
+// Página de links para a bio do Instagram (página inicial, /).
+// Somente destinos confirmados: landing pages deste site (/face e /corporal), Instagram, telefone e endereço de src/config/site.ts.
 
 type Dest = { id: string; href: string; external?: boolean };
 type PhotoCard = Dest & { kicker: string; title: string; text: string; media: Media };
@@ -28,7 +27,7 @@ const booking: Dest & { channel: ReactNode } = (() => {
 const cards: PhotoCard[] = [
   {
     id: 'cirurgia_facial',
-    href: `${mainSiteUrl}/face`,
+    href: '/face',
     kicker: 'Face',
     title: 'Cirurgia *facial*',
     text: 'Deep Plane, Deep Neck, pálpebras, nariz',
@@ -36,7 +35,7 @@ const cards: PhotoCard[] = [
   },
   {
     id: 'contorno_corporal',
-    href: `${mainSiteUrl}/corporal`,
+    href: '/corporal',
     kicker: 'Corpo',
     title: 'Contorno *corporal*',
     text: 'Lipoaspiração, abdominoplastia, mamas',
@@ -44,7 +43,7 @@ const cards: PhotoCard[] = [
   },
   {
     id: 'conheca_dr_salet',
-    href: `${mainSiteUrl}/face#medico`,
+    href: '/face#medico',
     kicker: 'O médico',
     title: 'Conheça o *Dr. Salet*',
     text: 'Atuação e forma de atendimento',
@@ -149,7 +148,7 @@ export function LinksPage() {
             Conteúdo informativo, não substitui a consulta médica. Responsável técnico: {doctor.name}, {doctor.crm} · {doctor.rqe}.
           </p>
           <p className="lk-foot__links">
-            <a href={`${mainSiteUrl}/privacidade`}>Privacidade</a>
+            <a href="/privacidade">Privacidade</a>
             <button type="button" className="link-btn" onClick={() => window.dispatchEvent(new Event('salet:open-consent'))}>
               Cookies
             </button>
