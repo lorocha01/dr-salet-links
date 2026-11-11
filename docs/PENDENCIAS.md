@@ -21,7 +21,11 @@ Nada abaixo foi inventado no site: cada item está oculto, como placeholder ou c
 - [ ] Aprovar o texto de apresentação (derivado da descrição já usada no site).
 - [ ] Depois de publicar, colocar `https://<domínio>/links?utm_source=instagram&utm_medium=bio` na bio do Instagram.
 
-## Rastreamento (preparado, inativo)
+## Rastreamento
+- [x] **Google Tag Manager `GTM-PMPXZPB2`** no `<head>` de `/face` e `/corporal`, com Consent Mode: cookies negados até o aceite no banner. Ao aceitar, o site envia `consent update` e o evento `consent_update` ao dataLayer. Configurar as tags dentro do GTM respeitando o consentimento (tags do Google já respeitam; Meta Pixel e outras precisam de acionador `consent_update` ou de "Configurações de consentimento").
+- [ ] Os eventos de conversão (`CONV-*`) já vão para o dataLayer: criar no GTM os acionadores "Evento personalizado" com esses nomes.
+
+### Via variáveis de ambiente (preparado, inativo)
 - [ ] GA4: `VITE_GA4_ID`
 - [ ] Google Ads: `VITE_GADS_ID` + um rótulo por conversão (`VITE_GADS_LABEL_*`)
 - [ ] Meta Pixel: `VITE_META_PIXEL_ID`

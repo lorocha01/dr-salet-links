@@ -2,6 +2,24 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
+    <!-- Google Tag Manager. Consent Mode: cookies negados até o aceite no banner (LGPD); a escolha salva é restaurada. -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      (function () {
+        var c = null;
+        try { c = JSON.parse(localStorage.getItem('salet.consent.v1')); } catch (e) {}
+        gtag('consent', 'default', {
+          analytics_storage: c && c.analytics ? 'granted' : 'denied',
+          ad_storage: c && c.marketing ? 'granted' : 'denied',
+          ad_user_data: c && c.marketing ? 'granted' : 'denied',
+          ad_personalization: 'denied'
+        });
+      })();
+      gtag('js', new Date());
+    </script>
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-PMPXZPB2"></script>
+    <!-- End Google Tag Manager -->
     <script>document.documentElement.classList.add("js")</script>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

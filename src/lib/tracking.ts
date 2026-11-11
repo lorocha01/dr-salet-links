@@ -52,6 +52,11 @@ let loaded = { google: false, meta: false };
 
 export function applyConsent(state: ConsentState | null) {
   if (!state) return;
+  // Landing pages com GTM: o gtag já existe (snippet no <head>) e precisa saber da escolha do visitante.
+  if (window.gtag) {
+    window.gtag('consent', 'update', googleConsent(state));
+    window.dataLayer!.push({ event: 'consent_update', consent_analytics: state.analytics, consent_marketing: state.marketing });
+  }
   const needsGoogle = (state.analytics && tracking.ga4Id) || (state.marketing && tracking.googleAdsId);
   if (needsGoogle && !loaded.google) loadGoogle(state);
   if (state.marketing && tracking.metaPixelId && !loaded.meta) loadMeta();
@@ -64,18 +69,25 @@ function loadScript(src: string) {
   document.head.appendChild(s);
 }
 
-function loadGoogle(state: ConsentState) {
-  loaded.google = true;
-  const firstId = tracking.ga4Id ?? tracking.googleAdsId!;
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag() { window.dataLayer!.push(arguments); };
-  window.gtag('consent', 'default', {
+function googleConsent(state: ConsentState) {
+  return {
     analytics_storage: state.analytics ? 'granted' : 'denied',
     ad_storage: state.marketing ? 'granted' : 'denied',
     ad_user_data: state.marketing ? 'granted' : 'denied',
     ad_personalization: 'denied',
-  });
-  window.gtag('js', new Date());
+  };
+}
+
+function loadGoogle(state: ConsentState) {
+  loaded.google = true;
+  const firstId = tracking.ga4Id ?? tracking.googleAdsId!;
+  window.dataLayer = window.dataLayer || [];
+  if (!window.gtag) {
+    // Sem GTM na página: inicializa o gtag aqui. Com GTM, o snippet do <head> já fez isso.
+    window.gtag = function gtag() { window.dataLayer!.push(arguments); };
+    window.gtag('consent', 'default', googleConsent(state));
+    window.gtag('js', new Date());
+  }
   if (tracking.ga4Id && state.analytics) window.gtag('config', tracking.ga4Id, { anonymize_ip: true });
   if (tracking.googleAdsId && state.marketing) window.gtag('config', tracking.googleAdsId);
   loadScript(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(firstId)}`);
@@ -150,7 +162,7 @@ export function trackConversion(key: ConversionKey, page: PageKey, actionId: str
     utm_campaign: attr.utm_campaign,
   };
 
-  // dataLayer para GTM, caso seja adotado futuramente (não carrega nada por si só).
+  // dataLayer para o GTM (instalado em /face e /corporal): use estes eventos como acionadores.
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: key, ...params });
 
